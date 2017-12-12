@@ -1,26 +1,24 @@
-// Shake.cpp: определ€ет точку входа дл€ консольного приложени€.
-//
 
 #include "stdafx.h"
 #include <iostream>
-#include <conio.h> // отслеживает все нажати€
+#include <conio.h> // track all the pressing
 
 bool gameOver;
 const int width = 20;
 const int height = 20;
-int x, y; // координаты нашей змейки
-int fruitX, fruitY; // координаты того, что съедает змейка
-int score; // общий счет
-int tailX[100], tailY[100]; // хвост 
-int nTail; // кол-во элементов в хвосте
+int x, y; // the coordinates of our snake
+int fruitX, fruitY; // the coordinates that eats the snake
+int score; 
+int tailX[100], tailY[100]; 
+int nTail; 
 
-// хранить движени€
+// store moving
 enum eDirections {STOP = 0, LEFT, RIGHT, UP, DOWN};
 eDirections dir;
 
-// настройка
+// Setting
 void Setup(){
-	gameOver = false; // по умолчанию в начале игры
+	gameOver = false; // default, the beginning of the game
 	dir = STOP;
 	x = width / 2 - 1;
 	y = height / 2 - 1;
@@ -28,11 +26,11 @@ void Setup(){
 	fruitY = rand() % height;
 	score = 0;
 }
-// отрисовка карты
+// to draw map
 void Draw(){
 	system("cls");
-	// отрисовка границ
-	for (int i = 0; i < width+1; i++) // верхн€€
+	// to draw borders
+	for (int i = 0; i < width+1; i++) // up
 		std::cout << "#";
 	std::cout << std::endl;
 
@@ -51,7 +49,7 @@ void Draw(){
 				std::cout << 'f';
 			}
 			else{
-				// дорисовка хвоста
+				// the drawing of the tail
 				bool print = false;
 				for (int k = 0; k < nTail; k++)
 				{
@@ -75,9 +73,9 @@ void Draw(){
 	std::cout << std::endl;
 	std::cout << "Score:" << score << std::endl;
 }
-// отслеживать нажати€ от пользовател€
+// track all the pressing from user
 void Input(){
-	if (_kbhit()) // true, если пользователь нажал кнопку на клавиатуре
+	if (_kbhit()) // true, if user pressed a button on the keyboard
 	{
 		switch (_getch())
 		{
@@ -93,21 +91,21 @@ void Input(){
 		case 's':
 			dir = DOWN;
 			break;
-		case 'x': // выход из игры
+		case 'x': // out
 			gameOver = true;
 		}
 
 	}
 }
-// логика игры
+
 void Logic(){
-	// образование хвоста
+	// create tail
 	int prevX = tailX[0];
 	int prevY = tailY[0];
 	int prev2X, prev2Y;
 	tailX[0] = x;
 	tailY[0] = y;
-	// создание хвоста, чтобы он повтор€л полностью движение змейки
+	// the creation of the tail, so he repeated all the movement of the snake
 	for (int i = 1; i < nTail; i++)
 	{
 		prev2X = tailX[i];
@@ -133,10 +131,10 @@ void Logic(){
 		y++;
 		break;
 	}
-	// за пределы стены
+	// limit the wall
 	//if (x > width || x<0 || y>height || y < 0)
 	//	gameOver = true;
-	// если выходим за пределы, то выходить с другой стороны стены
+	// if we go outside, then go on the other side of the wall
 	if (x >= width - 1)
 		x = 0;
 	else if (x < 0)
@@ -146,22 +144,21 @@ void Logic(){
 	else if (y < 0)
 		y = height - 2;
 
-	// проверка на съедение хвоста
+	// check to eating tail
 	for (int i = 0; i < nTail; i++)
 	{
 		if ( tailX[i] == x && tailY[i] == y){
 			gameOver = true;
 		}
 	}
-	// поехать фрукты, увеличение скоре
+	// change fruit, increase score
 	if (x == fruitX && y == fruitY)
 	{
 		score += 10;
 		fruitX = rand() % width;
 		fruitY = rand() % height;
-		nTail++; // съели фрукт - увеличилс€ хвост
+		nTail++; // to eat fruit - to increase tail
 	}
-
 }
 
 
